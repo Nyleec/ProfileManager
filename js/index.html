@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging App</title>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <h1>Messaging App</h1>
+
+    <h2>Register</h2>
+    <form id="registerForm">
+        <label>Username: <input type="text" id="registerUsername" required></label><br>
+        <label>Password: <input type="password" id="registerPassword" required></label><br>
+        <button type="submit">Register</button>
+    </form>
+    
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label>Username: <input type="text" id="loginUsername" required></label><br>
+        <label>Password: <input type="password" id="loginPassword" required></label><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <h2>Create User Profile</h2>
+    <form id="createProfileForm">
+        <label>Name: <input type="text" id="name" required></label><br>
+        <label>Age: <input type="number" id="age" required></label><br>
+        <label>Location: <input type="text" id="location" required></label><br>
+        <label>Description: <textarea id="description" required></textarea></label><br>
+        <button type="submit">Create Profile</button>
+    </form>
+
+    <h2>Send a Message</h2>
+    <form id="sendMessageForm">
+        <label>Sender: <input type="text" id="sender" required></label><br>
+        <label>Recipient: <input type="text" id="recipient" required></label><br>
+        <label>Message: <textarea id="messageContent" required></textarea></label><br>
+        <button type="submit">Send Message</button>
+    </form>
+
+<h2>View Your Messages</h2>
+<form id="viewMessagesForm">
+    <button type="submit">View Messages</button>
+</form>
+<ul id="messageList"></ul>
+
+</body>
+</html>

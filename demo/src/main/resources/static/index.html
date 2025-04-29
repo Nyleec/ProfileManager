@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messaging System</title>
+    <script>
+        async function sendMessage() {
+            const sender = document.getElementById("sender").value;
+            const recipient = document.getElementById("recipient").value;
+            const content = document.getElementById("content").value;
+
+            const response = await fetch('/messages/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sender, recipient, content })
+            });
+
+            const result = await response.text();
+            alert(result);
+        }
+
+        async function viewMessages() {
+            const user = document.getElementById("viewUser").value;
+
+            const response = await fetch(`/messages/view/${user}`);
+            const messages = await response.json();
+
+            const messageList = document.getElementById("messageList");
+            messageList.innerHTML = "";
+            messages.forEach(message => {
+                const li = document.createElement("li");
+                li.textContent = `${message.sender} -> ${message.recipient}: ${message.content} (${message.timestamp})`;
+                messageList.appendChild(li);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Messaging System</h1>
+
+    <h2>Send a Message</h2>
+    <form onsubmit="event.preventDefault(); sendMessage();">
+        <label>Sender: <input type="text" id="sender" required></label><br>
+        <label>Recipient: <input type="text" id="recipient" required></label><br>
+        <label>Content: <textarea id="content" required></textarea></label><br>
+        <button type="submit">Send</button>
+    </form>
+
+    <h2>View Messages</h2>
+    <form onsubmit="event.preventDefault(); viewMessages();">
+        <label>User: <input type="text" id="viewUser" required></label>
+        <button type="submit">View</button>
+    </form>
+    <ul id="messageList"></ul>
+</body>
+</html>
