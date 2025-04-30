@@ -34,22 +34,24 @@ app.post("/register", async (req, res) => {
         return res.status(400).json({ error: "Username already exists." });
     }
 
+    // Generate a unique user number
+    const userNumber = profiles.length > 0 ? Math.max(...profiles.map(p => p.userNumber || 0)) + 1 : 1;
+
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user profile
-    const userNumber = profiles.length > 0 ? Math.max(...profiles.map((p) => p.userNumber)) + 1 : 1;
     const newProfile = {
         userNumber,
         username,
         password: hashedPassword,
-        messages: [], // Each user will have their own messages
+        messages: [], // Initialize with an empty messages array
     };
 
     profiles.push(newProfile);
     writeData(profilesFile, profiles);
 
-    res.status(201).json({ message: "User registered successfully." });
+    res.status(201).json({ message: "User registered successfully.", userNumber });
 });
 
 // Login a user
@@ -120,7 +122,7 @@ app.post("/messages", authenticateToken, (req, res) => {
     }
 
     const profiles = readData(profilesFile);
-    const sender = profiles.find((profile) => profile.userNumber === req.user.userNumber);
+    const senderProfile = profiles.find((profile) => profile.userNumber === req.user.userNumber);
     const recipientProfile = profiles.find((profile) => profile.username === recipient);
 
     if (!recipientProfile) {
@@ -128,7 +130,7 @@ app.post("/messages", authenticateToken, (req, res) => {
     }
 
     const message = {
-        sender: sender.username,
+        sender: senderProfile.username, // Use the logged-in user's username as the sender
         recipient: recipient,
         content: content,
         timestamp: new Date().toISOString(),
@@ -140,7 +142,6 @@ app.post("/messages", authenticateToken, (req, res) => {
 
     res.status(201).json({ message: "Message sent successfully." });
 });
-
 
 // Utility functions to read/write JSON files
 const readData = (filePath) => {
@@ -155,18 +156,34 @@ const writeData = (filePath, data) => {
 // Routes
 
 // Create a user profile
-app.post("/profiles", (req, res) => {
-    const profiles = readData(profilesFile);
-    const newProfile = req.body;
+app.post("/profiles", async (req, res) => {
+    const { name, age, location, description } = req.body;
 
-    // Validate input
-    if (!newProfile.name || !newProfile.age || !newProfile.location || !newProfile.description) {
-        return res.status(400).json({ error: "All fields are required." });
+    if (!name || !age || !location || !description) {
+        return res.status(400).json({ error: "All fields (name, age, location, description) are required." });
     }
+
+    const profiles = readData(profilesFile);
+
+    // Generate a unique user number
+    const userNumber = profiles.length > 0 ? Math.max(...profiles.map(p => p.userNumber || 0)) + 1 : 1;
+
+    // Create a new profile
+    const newProfile = {
+        userNumber,
+        name,
+        age,
+        location,
+        description,
+        username: null, // Optional: Set to null if no username is provided
+        password: null, // Optional: Set to null if no password is provided
+        messages: [],   // Initialize with an empty messages array
+    };
 
     profiles.push(newProfile);
     writeData(profilesFile, profiles);
-    res.status(201).json({ message: "Profile created successfully." });
+
+    res.status(201).json({ message: "Profile created successfully.", userNumber });
 });
 
 // Get all user profiles

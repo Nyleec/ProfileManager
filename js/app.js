@@ -1,5 +1,8 @@
 const API_URL = "http://localhost:3000";
 
+// Retrieve the JWT token from localStorage
+const authToken = localStorage.getItem("authToken");
+
 // Create a user profile
 document.getElementById("createProfileForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -24,18 +27,33 @@ document.getElementById("createProfileForm").addEventListener("submit", async (e
 document.getElementById("sendMessageForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const sender = document.getElementById("sender").value;
+    // Retrieve the JWT token from localStorage
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+        alert("You must log in first.");
+        return;
+    }
+
     const recipient = document.getElementById("recipient").value;
     const content = document.getElementById("messageContent").value;
 
+    // Send the message without including the sender field
     const response = await fetch(`${API_URL}/messages`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sender, recipient, content }),
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ recipient, content }), // No sender field
     });
 
     const result = await response.json();
-    alert(result.message);
+    if (response.ok) {
+        alert(result.message);
+    } else {
+        alert(`Error: ${result.error}`);
+    }
+
     e.target.reset();
 });
 
@@ -61,8 +79,6 @@ document.getElementById("viewMessagesForm").addEventListener("submit", async (e)
         });
     }
 });
-
-let authToken = null; // Store the JWT token
 
 // Register a user
 document.getElementById("registerForm").addEventListener("submit", async (e) => {
@@ -107,7 +123,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 });
 
 // View messages for the logged-in user
-// View messages for the logged-in user
 document.getElementById("viewMessagesForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -141,4 +156,13 @@ document.getElementById("viewMessagesForm").addEventListener("submit", async (e)
             messageList.appendChild(li);
         });
     }
+});
+
+// Logout a user
+document.getElementById("logoutButton").addEventListener("click", () => {
+    // Clear the JWT token from localStorage
+    localStorage.removeItem("authToken");
+
+    // Redirect to the login page
+    window.location.href = "login.html";
 });

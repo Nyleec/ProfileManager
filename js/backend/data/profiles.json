@@ -16,5 +16,11 @@
     "username": "Tester",
     "password": "$2b$10$DhbFj4ZV/BUjUtjRQKmFMOJGypyE7EmCpTVyMRidRjHZgJRy761A.",
     "messages": []
+  },
+  {
+    "userNumber": null,
+    "username": "Tester1",
+    "password": "$2b$10$Izima50lrrbitkP7rGjlJOmxV2xFt6crEwmgapsZ4V6gKt86PxuCe",
+    "messages": []
   }
 ]

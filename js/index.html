@@ -5,23 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messaging App</title>
     <script src="app.js" defer></script>
+    <script>
+        // Check if the user is logged in
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) {
+            // Redirect to the login page if not logged in
+            window.location.href = "login.html";
+        }
+    </script>
 </head>
 <body>
     <h1>Messaging App</h1>
 
-    <h2>Register</h2>
-    <form id="registerForm">
-        <label>Username: <input type="text" id="registerUsername" required></label><br>
-        <label>Password: <input type="password" id="registerPassword" required></label><br>
-        <button type="submit">Register</button>
-    </form>
-    
-    <h2>Login</h2>
-    <form id="loginForm">
-        <label>Username: <input type="text" id="loginUsername" required></label><br>
-        <label>Password: <input type="password" id="loginPassword" required></label><br>
-        <button type="submit">Login</button>
-    </form>
+
+
 
     <h2>Create User Profile</h2>
     <form id="createProfileForm">
@@ -34,7 +31,6 @@
 
     <h2>Send a Message</h2>
     <form id="sendMessageForm">
-        <label>Sender: <input type="text" id="sender" required></label><br>
         <label>Recipient: <input type="text" id="recipient" required></label><br>
         <label>Message: <textarea id="messageContent" required></textarea></label><br>
         <button type="submit">Send Message</button>
@@ -45,6 +41,8 @@
     <button type="submit">View Messages</button>
 </form>
 <ul id="messageList"></ul>
+
+<button id="logoutButton">Logout</button>
 
 </body>
 </html>
